@@ -1,32 +1,43 @@
 #include <iostream>
 #include <vector>
+#include <fstream>
 
 using namespace std;
 
-class Visita{
+class Yatecito{
     public:
         int periodo;
         bool visitado;
-        Visita(){
+        Yatecito(){
             periodo = 0;
             visitado = 0;
         }
+        void visitar(){
+            visitado = true;
+        }        
 };
-
 class Yate{
     public:
+        int capacidad;
+        int tripulacion;
+        int cap_visita;
         int posicionYate;
         bool host;
-        vector <Visita> otrosyates;
+        vector <Yatecito> otrosyates;
         Yate(int cantidad){
             host = false;
-            vector <Visita> yates(cantidad) ;
+            vector <Yatecito> yates(cantidad) ;
             // cout << "Creado uwu" << endl;
             otrosyates = yates;
             // for (int i = 0; i < cantidad; i++){
             //     cout << yates[i].periodo << endl;
             // }
             // *otrosyates = Visita();
+        }
+        void PrintInfoYate(){
+            cout << "Yate " << posicionYate+1 ;
+            cout << " Capacidad: " << capacidad;
+            cout <<  " Tripulacion: "<< tripulacion <<endl;
         }
         void PrintYates(){
             cout << posicionYate+1;
@@ -41,26 +52,50 @@ class Yate{
             }
             cout << endl;
         }
+        void visita(int i){
+            otrosyates[i].visitar();
+        }
 };
 
 int main(void){
-    cout << "Hello World" << endl;
+    
+    // Carga de la instancia en memoria
     vector <Yate> yates;
-    Yate *yate;
-    int cantidadYates = 11;
-    for (int i = 0; i<cantidadYates;i++){
-        yates.push_back(Yate(cantidadYates));
-        yates[i].posicionYate = i;
+    ifstream configfile;
+    configfile.open("InstanciasPPP/InstanciasCSPLib/Ian01.txt", std::ifstream::in);
+    string line;
+    int cantidadYates;
+    int periodos;
+    if(configfile.is_open()){
+        getline(configfile,line);
+        cantidadYates = stoi(line);
+        getline(configfile,line);
+        periodos = stoi(line);
+        for (int i = 0; i<cantidadYates;i++){
+            yates.push_back(Yate(cantidadYates));
+            yates[i].posicionYate = i;
+        }
+        int count = 0;
+        while(getline(configfile,line,';')){
+            string capacidad;
+            capacidad = line.substr(0,line.find(','));
+            string tripulacion = line.substr(line.find(',')+1,string::npos);
+            yates[count].capacidad= stoi(capacidad);
+            yates[count].tripulacion= stoi(tripulacion);
+            yates[count].cap_visita = yates[count].capacidad -yates[count].tripulacion;
+            cout << "Capacidad: "+ capacidad << endl;
+            cout << "Tripulacion: " + tripulacion << endl;
+            count++;
+        }
     }
-    yates[1].host = true;
-    yates[10].host = true;
-
-    for (int i = 0; i<cantidadYates;i++){
-        yates[i].PrintYates();
+    else{
+        cout<< "La wea no se abrio :c" << endl;
     }
 
-    // Yate *yates= new Yate(3);
-    // yates->PrintYates();
+    // Fin de carga
+    for (int i = 0; i<cantidadYates;i++){
+        yates[i].PrintInfoYate();
+    }
 
     return 1;
 }
