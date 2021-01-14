@@ -38,7 +38,7 @@ OBJECTS = $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SOURCES))
 # Compiler options
 CXX ?= /usr/bin/g++
 CPPFLAGS = $(addprefix -I, $(HEADDIR)) -MMD -MP
-CFLAGS = -std=c++14 -O2 -Wall
+CFLAGS = -std=c++14 -O2
 LDFLAGS =
 LDLIBS =
 
